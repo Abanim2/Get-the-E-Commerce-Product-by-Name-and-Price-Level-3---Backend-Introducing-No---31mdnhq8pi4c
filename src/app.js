@@ -1,3 +1,19 @@
+// const fs = require("fs");
+// const express = require("express");
+// const app = express();
+
+// // Importing products from products.json file
+// const products = JSON.parse(fs.readFileSync(`${__dirname}/data/products.json`));
+
+// // Middlewares
+// app.use(express.json());
+
+// // Write GET endpoint for sending product to the client here
+// // Endpoint - /api/v1/products/:name/:price
+
+// module.exports = app;
+
+
 const fs = require("fs");
 const express = require("express");
 const app = express();
@@ -8,34 +24,29 @@ const products = JSON.parse(fs.readFileSync(`${__dirname}/data/products.json`));
 // Middlewares
 app.use(express.json());
 
-// Write GET endpoint for sending product to the client here
-// Endpoint - /api/v1/products/:name/:price
-
-module.exports = app;
-
-
-
-
-const express = require('express');
-const products = require('./data/products.json');
-
-const app = express();
-
-app.get('/products/:name/:price', (req, res) => {
+// Endpoint for sending product to the client
+app.get("/api/v1/products/:name/:price", (req, res) => {
   const { name, price } = req.params;
-  const product = products.find(p => p.name === name && p.price === Number(price));
+
+  // Find the product with matching name and price
+  const product = products.find((p) => p.name === name && p.price == price);
+
+  // If product is found, send it to the client
   if (product) {
     res.status(200).json({
-      status: 'success',
-      message: 'Product fetched successfully',
-      data: { product },
+      status: "success",
+      message: "Product fetched successfully",
+      data: {
+        product,
+      },
     });
   } else {
-    res.status(404).json({ status: 'failed', message: 'Product not found!' });
+    // If product is not found, send error message to the client
+    res.status(404).json({
+      status: "failed",
+      message: "Product not found!",
+    });
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}.`);
-});
+module.exports = app;
