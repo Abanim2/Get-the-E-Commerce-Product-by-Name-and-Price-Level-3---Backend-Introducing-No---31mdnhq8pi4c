@@ -12,3 +12,30 @@ app.use(express.json());
 // Endpoint - /api/v1/products/:name/:price
 
 module.exports = app;
+
+
+
+
+const express = require('express');
+const products = require('./data/products.json');
+
+const app = express();
+
+app.get('/products/:name/:price', (req, res) => {
+  const { name, price } = req.params;
+  const product = products.find(p => p.name === name && p.price === Number(price));
+  if (product) {
+    res.status(200).json({
+      status: 'success',
+      message: 'Product fetched successfully',
+      data: { product },
+    });
+  } else {
+    res.status(404).json({ status: 'failed', message: 'Product not found!' });
+  }
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}.`);
+});
